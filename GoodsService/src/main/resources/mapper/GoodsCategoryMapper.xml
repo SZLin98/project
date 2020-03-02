@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xmu.oomall.mapper.GoodsCategoryMapper">
+    <insert id="insertGoodsCategory" keyProperty="id" useGeneratedKeys="true" >
+        <selectKey resultType="Integer" order="AFTER" keyProperty="goodsCategory.id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into oomall_goods_category(name, pid, gmt_create)
+        values(#{goodsCategory.name}, #{goodsCategory.pid},#{goodsCategory.beDeleted})
+    </insert>
+    <update id="updateGoodsCategory">
+        update oomall_goods_category
+        <set>
+            <if test="goodsCategory.name != null">
+                name=#{goodsCategory.name},
+            </if>
+            <if test="goodsCategory.pid != null">
+                pid=#{goodsCategory.pid},
+            </if>
+            <if test="goodsCategory.beDeleted != null">
+                is_deleted=1,
+            </if>
+        </set>
+        where id=#{goodsCategory.id} and is_deleted='0';
+    </update>
+    <update id="updateLevel2" parameterType="Integer">
+        update oomall_goods_category
+        set pid = null
+        where pid = #{id}
+    </update>
+    <select id="listGoodsCategories" parameterType="Integer" resultType="xmu.oomall.domain.goods.GoodsCategoryPo">
+        select id,
+               name,
+               pid,
+               pic_url
+        from oomall_goods_category
+        where is_deleted='0'
+        <if test="pid != null">
+            and pid=#{pid}
+        </if>
+        limit #{start},#{limit}
+    </select>
+    <select id="getGoodsCategoryById" parameterType="Integer" resultType="xmu.oomall.domain.goods.GoodsCategoryPo">
+        select id,
+               name,
+               pid,
+               pic_url
+        from oomall_goods_category
+        where id=#{id} and is_deleted='0'
+    </select>
+</mapper>

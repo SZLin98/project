@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shop.mapper.AftersalesServiceMapper" >
+  <resultMap id="BaseResultMap" type="com.shop.domain.AftersalesService" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="beDeleted" jdbcType="BIT" />
+    <result column="goods_type" property="goodsType" jdbcType="INTEGER" />
+    <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+    <result column="apply_reason" property="applyReason" jdbcType="VARCHAR" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="is_applied" property="beApplied" jdbcType="BIT" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="order_item_id" property="orderItemId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id,  is_deleted, goods_type,  apply_reason,
+    type, is_applied, number, order_item_id,status,user_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from oomall_aftersales_service
+    where id = #{id,jdbcType=BIGINT} and is_deleted=0
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    update oomall_aftersales_service
+    set is_deleted =1
+    where id = #{id,jdbcType=BIGINT} and is_deleted=0
+  </delete>
+
+  <insert id="insert" parameterType="com.shop.domain.AftersalesService" >
+    insert into oomall_aftersales_service (
+      goods_type,
+      apply_reason,
+      type,
+      number,
+      order_item_id,
+      user_id,
+      gmt_create,
+      gmt_modified,
+      apply_time,
+      id
+      )
+    values (
+      #{goodsType,jdbcType=INTEGER},
+      #{applyReason,jdbcType=VARCHAR},
+      #{type,jdbcType=INTEGER},
+      #{number,jdbcType=INTEGER},
+      #{orderItemId,jdbcType=BIGINT},
+      #{userId,jdbcType=INTEGER},
+      #{gmtCreate,jdbcType=TIMESTAMP},
+      #{gmtModified,jdbcType=TIMESTAMP},
+      #{applyTime,jdbcType=TIMESTAMP},
+      #{id,jdbcType=BIGINT}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey2" parameterType="com.shop.domain.AftersalesService" >
+    update oomall_aftersales_service
+    <trim prefix="set" suffixOverrides=",">
+      <if test="gmtCreate !=null">gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},</if>
+      <if test="gmtModified !=null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+      <if test="beDeleted !=null">is_deleted = #{beDelete,jdbcType=BIT},</if>
+      <if test="goodsType !=null">goods_type = #{goodsType,jdbcType=INTEGER},</if>
+      <if test="applyTime !=null">apply_time = #{applyTime,jdbcType=TIMESTAMP},</if>
+      <if test="applyReason !=null">apply_reason = #{applyReason,jdbcType=VARCHAR},</if>
+      <if test="endTime !=null">end_time = #{endTime,jdbcType=TIMESTAMP},</if>
+      <if test="type !=null">type = #{type,jdbcType=INTEGER},</if>
+      <if test="beApplied !=null">is_applied = #{beApplied,jdbcType=BIT},</if>
+      <if test="number !=null">number = #{number,jdbcType=INTEGER},</if>
+      <if test="orderItemId !=null">status_code=#{statusCode,jdbcType=INTEGER},</if>
+      <if test="status !=null">status=#{status,jdbcType=INTEGER},</if>
+      <if test="userId !=null">user_id=#{userId,jdbcType=INTEGER},</if>
+    </trim>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.shop.domain.AftersalesService" >
+    update oomall_aftersales_service
+    <trim prefix="set" suffixOverrides=",">
+      <if test="applyReason !=null">apply_reason = #{applyReason,jdbcType=VARCHAR},</if>
+      <if test="type !=null">type = #{type,jdbcType=INTEGER},</if>
+      <if test="number !=null">number = #{number,jdbcType=INTEGER},</if>
+      <if test="gmtModified !=null">gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},</if>
+    </trim>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="manageUpdateByPrimaryKey" parameterType="com.shop.domain.AftersalesService" >
+    update oomall_aftersales_service
+    <trim prefix="set" suffixOverrides=",">
+      <if test="beApplied !=null">is_applied = #{beApplied,jdbcType=BIT},</if>
+      <if test="status !=null">status=#{status,jdbcType=INTEGER},</if>
+      <if test="endTime !=null">end_time = #{endTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--  售后服务列表-->
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from oomall_aftersales_service
+    where user_id = #{userId,jdbcType=BIGINT} and is_deleted=0
+    limit #{start},#{limit}
+  </select>
+
+  <select id="selectAllList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from oomall_aftersales_service
+    where is_deleted=0
+    limit #{start},#{limit}
+  </select>
+</mapper>

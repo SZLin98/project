@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.PaymentMapper">
+<resultMap id="BaseResultMap" type="com.example.demo.domain.Payment">
+<!--    <id column="id" property="id" jdbcType="BIGINT" />-->
+<!--    <result column="actual_price" property="actualPrice" jdbcType="DECIMAL"/>-->
+<!--    <result column="pay_channel" property="payChannel" jdbcType="TINYINT"/>-->
+<!--    <result column="is_successful" property="beSuccessful" jdbcType="TINYINT"/>-->
+<!--    <result column="pay_time" property="payTime"   jdbcType="DATETIME"/>-->
+<!--    <result column="pay_sn" property="paySn" jdbcType="VARCHAR"/>-->
+<!--    <result column="begin_time" property="beginTime" jdbcType="DATETIME"/>-->
+<!--    <result column="end_time" property="endTime" jdbcType="DATETIME"/>-->
+<!--    <result column="order_id" property="orderId" jdbcType="BIGINT"/>-->
+<!--    <result column="is_deleted" property="beDeleted" jdbcType="TINYINT"/>-->
+<!--    <result column="gmt_create" property="gmtCreate" jdbcType="DATETIME"/>-->
+<!--    <result column="gmt_modified" property="gmtModified" jdbcType="DATETIME"/>-->
+</resultMap>
+    <insert id="create" parameterType="com.example.demo.domain.Payment">
+        INSERT INTO oomall_payment (actual_price, pay_channel, pay_time, pay_sn, begin_time, end_time, order_id)
+        VALUES (#{actualPrice},#{payChannel},#{payTime},#{paySn},#{beginTime},#{endTime},#{orderId})
+    </insert>
+
+
+    <update id="put" parameterType="com.example.demo.domain.Payment">
+        UPDATE oomall_payment
+        set
+            status=#{statusCode},
+            pay_time=#{payTime}
+        where pay_sn=#{paySn} and is_deleted=0 and status=0
+    </update>
+        <select id="selectPay" parameterType="java.lang.String" resultType="com.example.demo.domain.Payment">
+        select  id,actual_price as actualPrice,pay_channel as payChannel,status as statusCode,
+             pay_sn as paySn,begin_time as beginTime ,end_time as endTime,order_id as orderId
+               from oomall_payment where pay_sn=#{paySn} and is_deleted=0 and status=0
+
+    </select>
+
+    <update id="deletePayment" parameterType="java.lang.String" >
+        update oomall_payment
+        set is_deleted=1
+        where pay_sn=#{paySn} and is_deleted=0
+    </update>
+
+    <select id="selectAllPayment" resultType="com.example.demo.domain.Payment">
+        select id, actual_price as actualPrice, pay_channel as payChannel, status as statusCode,
+               pay_time as payTime , pay_sn as paySn, begin_time as beginTime, end_time as endTime, order_id as orderId, is_deleted as beDeleted, gmt_create as gmtCreate, gmt_modified as gmtModified
+        from oomall_payment
+        where is_deleted=0
+        limit #{start},#{limit}
+    </select>
+
+    <select id="selectPayment" parameterType="java.lang.String" resultType="com.example.demo.domain.Payment">
+        select  id, actual_price as actualPrice, pay_channel as payChannel, status as statusCode,
+                pay_time as payTime , pay_sn as paySn, begin_time as beginTime, end_time as endTime, order_id as orderId, is_deleted as beDeleted, gmt_create as gmtCreate, gmt_modified as gmtModified
+        from oomall_payment where is_deleted=0
+
+    </select>
+
+    <select id="selectByOrderId" parameterType="java.lang.Integer" resultType="com.example.demo.domain.Payment">
+        select id, actual_price as actualPrice, pay_channel as payChannel, status as statusCode,
+               pay_time as payTime , pay_sn as paySn, begin_time as beginTime, end_time as endTime, order_id as orderId, is_deleted as beDeleted, gmt_create as gmtCreate, gmt_modified as gmtModified
+        from oomall_payment
+        where order_id=#{orderId} and is_deleted=0 and status=0
+
+    </select>
+
+    <insert id="refundPayment" parameterType="com.example.demo.domain.Payment">
+        INSERT INTO oomall_payment (actual_price, pay_channel, pay_time, pay_sn, begin_time, end_time, order_id,status)
+        VALUES (#{actualPrice},#{payChannel},#{payTime},#{paySn},#{beginTime},#{endTime},#{orderId},#{statusCode})
+    </insert>
+</mapper>
+
+
